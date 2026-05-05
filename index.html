@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cumpleaños Gloria María - 85 años</title>
+    
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Playfair+Display:wght@400;500;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <style>
+        /* RESET Y ESTILOS BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+        
+        :root {
+            --gold: #d4af37;
+            --gold-light: #ffd700;
+            --gold-dark: #b8941f;
+            --rose-50: #fff1f5;
+            --rose-100: #ffe4ee;
+            --rose-200: #fecddf;
+            --rose-400: #fb7185;
+            --rose-600: #e11d48;
+            --rose-800: #9f1239;
+            --black: #12070c;
+            --dark: #1a0c12;
+            --gray: #3b2a33;
+            --light: #fff7fb;
+            --transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            --section-spacing: 120px;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: radial-gradient(circle at 15% 20%, rgba(251, 113, 133, 0.18), transparent 45%),
+                        radial-gradient(circle at 80% 10%, rgba(212, 175, 55, 0.10), transparent 50%),
+                        radial-gradient(circle at 70% 85%, rgba(254, 205, 223, 0.22), transparent 55%),
+                        linear-gradient(135deg, var(--black) 0%, var(--dark) 100%);
+            color: var(--light);
+            overflow-x: hidden;
+            line-height: 1.7;
+        }
+
+        /* Brillos / sparkles elegantes */
+        .sparkles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(1px 1px at 12% 18%, rgba(255, 241, 245, 0.55) 0, transparent 60%),
+                radial-gradient(1px 1px at 78% 22%, rgba(255, 215, 0, 0.45) 0, transparent 60%),
+                radial-gradient(1.5px 1.5px at 32% 64%, rgba(254, 205, 223, 0.55) 0, transparent 60%),
+                radial-gradient(1px 1px at 55% 40%, rgba(255, 241, 245, 0.45) 0, transparent 60%),
+                radial-gradient(1.2px 1.2px at 90% 78%, rgba(212, 175, 55, 0.35) 0, transparent 60%),
+                radial-gradient(1px 1px at 8% 82%, rgba(254, 205, 223, 0.40) 0, transparent 60%);
+            opacity: 0.75;
+            filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.16));
+            animation: sparkleTwinkle 6s ease-in-out infinite;
+        }
+
+        .sparkles::before,
+        .sparkles::after {
+            content: '';
+            position: absolute;
+            inset: -30%;
+            background:
+                radial-gradient(1px 1px at 25% 30%, rgba(255, 241, 245, 0.40) 0, transparent 60%),
+                radial-gradient(1px 1px at 62% 15%, rgba(212, 175, 55, 0.35) 0, transparent 60%),
+                radial-gradient(1.5px 1.5px at 70% 62%, rgba(254, 205, 223, 0.45) 0, transparent 60%),
+                radial-gradient(1px 1px at 40% 78%, rgba(255, 241, 245, 0.35) 0, transparent 60%),
+                radial-gradient(1.2px 1.2px at 85% 45%, rgba(255, 215, 0, 0.28) 0, transparent 60%);
+            opacity: 0.75;
+            animation: sparkleDrift 18s linear infinite;
+            transform: translate3d(0, 0, 0);
+        }
+
+        .sparkles::after {
+            opacity: 0.35;
+            filter: blur(0.2px);
+            animation-duration: 26s;
+            animation-direction: reverse;
+        }
+
+        @keyframes sparkleTwinkle {
+            0%, 100% { opacity: 0.45; }
+            50% { opacity: 0.72; }
+        }
+
+        @keyframes sparkleDrift {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-6%, -3%, 0); }
+        }
+
+        /* Orbes suaves para look “premium” */
+        .orbs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.9;
+            mix-blend-mode: screen;
+            filter: blur(22px);
+        }
+
+        .orb {
+            position: absolute;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,241,245,0.42), rgba(254,205,223,0.10), transparent 65%);
+            animation: orbFloat 18s ease-in-out infinite;
+        }
+
+        .orb.gold {
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle at 30% 30%, rgba(255,215,0,0.24), rgba(212,175,55,0.10), transparent 65%);
+            animation-duration: 22s;
+        }
+
+        .orb.small {
+            width: 260px;
+            height: 260px;
+            opacity: 0.85;
+            animation-duration: 16s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate3d(0,0,0) scale(1); }
+            50% { transform: translate3d(30px,-18px,0) scale(1.05); }
+        }
+
+        /* Borde “shimmer” en cards (sutil) */
+        .info-card, .itinerary-content, .gift-card, .rsvp-form, .guest-info, .gallery-rail {
+            position: relative;
+        }
+        .info-card::after, .itinerary-content::after, .gift-card::after, .rsvp-form::after, .guest-info::after, .gallery-rail::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(120deg,
+                rgba(254,205,223,0.10),
+                rgba(255,215,0,0.14),
+                rgba(251,113,133,0.10),
+                rgba(254,205,223,0.10)
+            );
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.9;
+            pointer-events: none;
+        }
+
+        /* Un poco más de profundidad en secciones */
+        .content-section {
+            position: relative;
+        }
+
+        /* Mantener contenido encima del fondo */
+        body > * { position: relative; z-index: 1; }
+        
+        /* TIPOGRAFÍA */
+        h1, h2, h3, h4, .font-cinzel {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* ANIMACIONES BASE */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        /* CLASES DE ANIMACIÓN */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: var(--transition);
+        }
+        
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 4px;
+        }
+        
+        /* NAVIGATION */
+        .nav-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px 0;
+            background: rgba(18, 7, 12, 0.86);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(254, 205, 223, 0.18);
+            transition: var(--transition);
+        }
+        
+        .nav-container.scrolled {
+            padding: 15px 0;
+            background: rgba(10, 10, 10, 0.95);
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4rem;
+            color: var(--gold);
+            animation: fadeInLeft 1s ease-out;
+        }
+        
+        .logo i {
+            font-size: 1.8rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            animation: fadeInRight 1s ease-out;
+        }
+        
+        .nav-link {
+            color: var(--light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: var(--transition);
+            position: relative;
+            padding: 5px 0;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--gold);
+            transition: var(--transition);
+        }
+        
+        .nav-link:hover {
+            color: var(--gold);
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* HERO SECTION */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+        
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(254, 205, 223, 0.18) 0%, transparent 55%),
+                radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 60% 85%, rgba(251, 113, 133, 0.14) 0%, transparent 60%),
+                linear-gradient(135deg, var(--black) 0%, var(--dark) 100%);
+            z-index: -2;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 30% 20%, rgba(255, 241, 245, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 70% 30%, rgba(255, 241, 245, 0.08) 0%, transparent 55%),
+                radial-gradient(circle at 50% 80%, rgba(255, 241, 245, 0.10) 0%, transparent 50%);
+            opacity: 1;
+            z-index: -1;
+        }
+        
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+            padding: 0 20px;
+            z-index: 1;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--rose-600), var(--gold));
+            color: var(--black);
+            padding: 8px 25px;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease-out 0.3s both;
+            box-shadow: 0 8px 24px rgba(251, 113, 133, 0.20), 0 8px 24px rgba(212, 175, 55, 0.18);
+        }
+        
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            line-height: 1.1;
+            margin-bottom: 20px;
+            animation: fadeUp 1s ease-out 0.6s both;
+            background: linear-gradient(45deg, #fff 15%, var(--rose-200) 55%, var(--gold-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            color: rgba(255, 241, 245, 0.92);
+            margin-bottom: 30px;
+            animation: fadeUp 1s ease-out 0.9s both;
+            font-style: italic;
+        }
+        
+        .hero-date {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(254, 205, 223, 0.10);
+            padding: 15px 35px;
+            border-radius: 15px;
+            border: 1px solid rgba(254, 205, 223, 0.25);
+            backdrop-filter: blur(10px);
+            animation: fadeUp 1s ease-out 1.2s both;
+        }
+        
+        .hero-date i {
+            font-size: 1.5rem;
+            color: var(--gold);
+        }
+        
+        .hero-date span {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: float 2s ease-in-out infinite;
+            color: var(--gold);
+            font-size: 1.5rem;
+        }
+        
+        /* CONTENT SECTIONS */
+        .content-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .section-spacer {
+            height: var(--section-spacing);
+            position: relative;
+        }
+        
+        .section-spacer::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+        }
+        
+        /* COUNTDOWN SECTION */
+        .countdown-section {
+            padding: 80px 0;
+            position: relative;
+        }
+        
+        .countdown-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent, rgba(26, 26, 26, 0.3), transparent);
+            z-index: -1;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 50px;
+            color: var(--light);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--rose-400), var(--gold), transparent);
+        }
+        
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .countdown-item {
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+            background: rgba(26, 26, 26, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 15px;
+            padding: 25px 15px;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+        
+        .countdown-item:hover {
+            transform: translateY(-10px);
+            border-color: rgba(212, 175, 55, 0.3);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+        }
+        
+        .countdown-number {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 900;
+            color: var(--gold-light);
+            margin-bottom: 10px;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .countdown-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* EVENT INFO SECTION */
+        .event-info-section {
+            padding: 80px 0;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .info-card {
+            background: rgba(26, 26, 26, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: var(--transition);
+        }
+        
+        .info-card:hover::before {
+            left: 100%;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+        
+        .info-icon {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+        
+        .info-card h3 {
+            color: var(--gold);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .info-card p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
+        }
+        
+        .highlight-time {
+            font-size: 1.8rem;
+            color: var(--gold-light);
+            font-weight: 700;
+            margin: 15px 0;
+        }
+        
+        .btn-location {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(45deg, var(--rose-600), var(--gold));
+            color: var(--black);
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .btn-location:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(251, 113, 133, 0.24), 0 10px 28px rgba(212, 175, 55, 0.18);
+        }
+
+        /* GALERÍA (CARRIL) */
+        .gallery-section {
+            padding: 80px 0;
+            position: relative;
+        }
+
+        .gallery-rail {
+            position: relative;
+            overflow: hidden;
+            border-radius: 22px;
+            border: 1px solid rgba(254, 205, 223, 0.22);
+            background: rgba(26, 12, 18, 0.35);
+            backdrop-filter: blur(10px);
+        }
+
+        .gallery-track {
+            display: flex;
+            gap: 14px;
+            padding: 16px;
+            will-change: transform;
+            animation: galleryScroll 35s linear infinite;
+        }
+
+        .gallery-rail:hover .gallery-track {
+            animation-play-state: paused;
+        }
+
+        .gallery-item {
+            flex: 0 0 auto;
+            width: 220px;
+            height: 150px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.16);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+            background: rgba(255,255,255,0.04);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transform: scale(1.02);
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.08);
+        }
+
+        @keyframes galleryScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .gallery-empty {
+            padding: 26px 18px;
+            text-align: center;
+            color: rgba(255, 241, 245, 0.8);
+        }
+
+        .gallery-empty strong {
+            color: var(--gold-light);
+        }
+
+        /* AUDIO BACKGROUND */
+        .audio-fab {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 1200;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(254, 205, 223, 0.25);
+            background: rgba(18, 7, 12, 0.75);
+            color: var(--light);
+            backdrop-filter: blur(12px);
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+        }
+
+        .audio-fab:hover {
+            transform: translateY(-3px);
+            border-color: rgba(212, 175, 55, 0.25);
+        }
+
+        .audio-fab i {
+            color: var(--gold);
+        }
+        
+        /* THEME SECTION */
+        .theme-section {
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        .theme-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+            z-index: -1;
+        }
+        
+        .theme-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 40px;
+            background: rgba(26, 26, 26, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .theme-title {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            color: var(--gold-light);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .theme-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        
+        .theme-note {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(212, 175, 55, 0.1);
+            padding: 10px 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .theme-note i {
+            color: var(--gold);
+        }
+        
+        /* ITINERARY SECTION */
+        .itinerary-section {
+            padding: 80px 0;
+            position: relative;
+        }
+        
+        .itinerary {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .itinerary::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+        }
+        
+        .itinerary-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .itinerary-item:nth-child(odd) {
+            flex-direction: row;
+        }
+        
+        .itinerary-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        
+        .itinerary-content {
+            flex: 1;
+            background: rgba(26, 26, 26, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+        
+        .itinerary-item:hover .itinerary-content {
+            transform: translateY(-5px);
+            border-color: rgba(212, 175, 55, 0.3);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+        }
+        
+        .itinerary-time {
+            flex: 0 0 200px;
+            text-align: center;
+            padding: 0 20px;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 1.2rem;
+        }
+        
+        .itinerary-content h4 {
+            color: var(--gold-light);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        
+        .itinerary-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .itinerary-content li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .itinerary-content li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+            font-size: 0.8rem;
+        }
+        
+        /* GIFTS SECTION */
+        .gifts-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .gift-card {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(26, 26, 26, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 20px;
+            padding: 60px 40px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .gift-icon {
+            font-size: 3.5rem;
+            color: var(--gold);
+            margin-bottom: 25px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .gift-card h2 {
+            font-size: 2.5rem;
+            color: var(--gold-light);
+            margin-bottom: 20px;
+        }
+        
+        .gift-message {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+        }
+        
+        .gift-message p {
+            margin-bottom: 10px;
+        }
+        
+        /* RSVP SECTION */
+        .rsvp-section {
+            padding: 80px 0 120px;
+        }
+        
+        .rsvp-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .guest-info {
+            background: rgba(26, 26, 26, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .info-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            color: var(--gold);
+        }
+        
+        .info-header i {
+            font-size: 1.8rem;
+        }
+        
+        .info-header h3 {
+            font-size: 1.3rem;
+        }
+        
+        .info-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(10, 10, 10, 0.5);
+            border-radius: 10px;
+        }
+        
+        .info-item i {
+            font-size: 1.5rem;
+            color: var(--gold);
+        }
+        
+        .info-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .info-value {
+            font-weight: 600;
+            color: var(--light);
+        }
+        
+        .rsvp-form {
+            background: rgba(26, 26, 26, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 15px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: var(--gold);
+            font-weight: 500;
+        }
+        
+        .form-select, .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(10, 10, 10, 0.7);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 10px;
+            color: var(--light);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-select:focus, .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.1);
+        }
+        
+        .guests-info {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(45deg, var(--gold), var(--gold-light));
+            color: var(--black);
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .confirmation-message, .error-message {
+            text-align: center;
+            padding: 40px;
+            background: rgba(26, 26, 26, 0.5);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .confirmation-message {
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .error-message {
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+        
+        .message-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .confirmation-message .message-icon {
+            color: #4caf50;
+        }
+        
+        .error-message .message-icon {
+            color: #f44336;
+        }
+        
+        .confirmation-message h3 {
+            color: #4caf50;
+            margin-bottom: 15px;
+        }
+        
+        .error-message h3 {
+            color: #f44336;
+            margin-bottom: 15px;
+        }
+        
+        .message-note {
+            margin-top: 15px;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+        }
+        
+        /* LOADER */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--black);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .loader-clapperboard {
+            font-size: 4rem;
+            color: var(--gold);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        /* INVALID INVITATION */
+        .invalid-invitation {
+            text-align: center;
+            padding: 80px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .invalid-icon {
+            font-size: 5rem;
+            color: #f44336;
+            margin-bottom: 30px;
+        }
+        
+        .invalid-message {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+        
+        /* FOOTER */
+        .footer {
+            padding: 60px 0;
+            background: linear-gradient(to top, var(--black), transparent);
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            text-align: center;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            font-size: 1.8rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+        
+        .footer-text {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+        }
+        
+        .footer-social {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            :root {
+                --section-spacing: 80px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .countdown-item {
+                min-width: 120px;
+                padding: 20px 10px;
+            }
+            
+            .countdown-number {
+                font-size: 2.5rem;
+            }
+            
+            .itinerary::before {
+                left: 30px;
+            }
+            
+            .itinerary-item, .itinerary-item:nth-child(odd), .itinerary-item:nth-child(even) {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-left: 60px;
+            }
+            
+            .itinerary-time {
+                flex: none;
+                text-align: left;
+                padding: 0 0 10px 0;
+                order: -1;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-card {
+                padding: 28px 22px;
+                border-radius: 18px;
+            }
+
+            .hero-content {
+                padding: 0 16px;
+            }
+
+            .hero-date {
+                padding: 12px 18px;
+                gap: 10px;
+            }
+
+            .hero-date span {
+                font-size: 1.05rem;
+                letter-spacing: 1px;
+            }
+
+            .section-title {
+                margin-bottom: 36px;
+            }
+
+            .itinerary-time {
+                font-size: 1.05rem;
+            }
+
+            .itinerary-content {
+                padding: 22px;
+            }
+
+            .gallery-item {
+                width: 180px;
+                height: 120px;
+            }
+
+            .audio-fab {
+                right: 12px;
+                bottom: 12px;
+                padding: 10px 12px;
+                gap: 8px;
+            }
+            
+            .theme-content {
+                padding: 40px 20px;
+            }
+            
+            .gift-card {
+                padding: 40px 20px;
+            }
+            
+            .rsvp-form {
+                padding: 30px 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .countdown-container {
+                gap: 10px;
+            }
+            
+            .countdown-item {
+                min-width: calc(50% - 10px);
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .badge {
+                letter-spacing: 2px;
+                padding: 7px 16px;
+                font-size: 0.75rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.05rem;
+            }
+
+            .countdown-item {
+                padding: 18px 12px;
+                border-radius: 14px;
+            }
+
+            .countdown-number {
+                font-size: 2.2rem;
+            }
+
+            .rsvp-form {
+                padding: 26px 18px;
+                border-radius: 16px;
+            }
+
+            .guest-info {
+                padding: 22px 18px;
+                border-radius: 16px;
+            }
+
+            .form-input, .form-select, .form-textarea {
+                padding: 12px 16px;
+                border-radius: 12px;
+                font-size: 1rem;
+            }
+
+            .btn-submit {
+                padding: 14px 16px;
+                border-radius: 12px;
+                font-size: 0.98rem;
+            }
+
+            .itinerary-item {
+                margin-bottom: 34px;
+            }
+
+            .itinerary-item, .itinerary-item:nth-child(odd), .itinerary-item:nth-child(even) {
+                margin-left: 54px;
+            }
+
+            .itinerary::before {
+                left: 26px;
+            }
+
+            .orbs {
+                filter: blur(26px);
+                opacity: 0.85;
+            }
+
+            .orb {
+                width: 300px;
+                height: 300px;
+            }
+
+            .orb.gold {
+                width: 340px;
+                height: 340px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sparkles" aria-hidden="true"></div>
+    <div class="orbs" aria-hidden="true">
+        <div class="orb" style="top:-120px; left:-140px;"></div>
+        <div class="orb gold" style="top:12%; right:-180px;"></div>
+        <div class="orb small" style="bottom:6%; left:18%;"></div>
+    </div>
+    <!-- Navigation -->
+    <nav class="nav-container" id="navbar">
+        <div class="nav-content">
+            <div class="logo">
+                <i class="fas fa-heart"></i>
+                <span>Cumpleaños</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link">Inicio</a>
+                <a href="#countdown" class="nav-link">Cuenta Regresiva</a>
+                <a href="#event" class="nav-link">El Evento</a>
+                <a href="#gallery" class="nav-link">Galería</a>
+                <a href="#itinerary" class="nav-link">Itinerario</a>
+                <a href="#rsvp" class="nav-link">Confirmar</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="badge" id="cfg-hero-badge-view">¡Estamos de fiesta!</div>
+            <h1 class="hero-title font-cinzel" id="cfg-hero-title-view">Cumpleaños<br>Gloria María</h1>
+            <p class="hero-subtitle font-playfair" id="cfg-hero-subtitle-view">Celebramos 85 años de vida, amor y bendiciones</p>
+            <div class="hero-date">
+                <i class="fas fa-calendar-heart"></i>
+                <span id="cfg-hero-date-view">16 DE MAYO 2026</span>
+            </div>
+            <div id="invitation-info" style="margin-top: 20px;">
+                <div id="invitation-message" class="font-playfair" style="color: var(--gold-light); font-size: 1.1rem;"></div>
+            </div>
+        </div>
+        <div class="scroll-hint">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Countdown Section -->
+    <div class="section-spacer"></div>
+    
+    <section id="countdown" class="countdown-section animate-on-scroll">
+        <div class="countdown-bg"></div>
+        <div class="content-section">
+            <h2 class="section-title font-cinzel">Cuenta Regresiva</h2>
+            <div class="countdown-container">
+                <div class="countdown-item">
+                    <div class="countdown-number" id="days">000</div>
+                    <div class="countdown-label">Días</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="hours">00</div>
+                    <div class="countdown-label">Horas</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="minutes">00</div>
+                    <div class="countdown-label">Minutos</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="seconds">00</div>
+                    <div class="countdown-label">Segundos</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Event Info Section -->
+    <div class="section-spacer"></div>
+    
+    <section id="event" class="event-info-section animate-on-scroll">
+        <div class="content-section">
+            <h2 class="section-title font-cinzel">Detalles del Evento</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3 class="font-cinzel">Lugar</h3>
+                    <p id="cfg-venue-name-view">Salón Valles</p>
+                    <div id="cfg-venue-address-view">
+                        <p>Calle 29 diagonal #341 x 38 y 40</p>
+                        <p>Col. San Luis Chuburná, Mérida, Yucatán</p>
+                    </div>
+                    <button class="btn-location" onclick="openLocation()">
+                        <i class="fas fa-map-marked-alt"></i> Ver en Mapas
+                    </button>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 class="font-cinzel">Hora</h3>
+                    <p class="highlight-time" id="cfg-time-view">8:30 P.M.</p>
+                    <p id="cfg-dress-code-view">Formal</p>
+                    <p>Código de vestimenta</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3 class="font-cinzel">Fecha</h3>
+                    <p class="highlight-time" id="cfg-date-view">Sábado 16 de mayo 2026</p>
+                    <p>Una noche inolvidable</p>
+                    <p>¡Nos encantará compartirla contigo!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <div class="section-spacer"></div>
+    <section id="gallery" class="gallery-section animate-on-scroll">
+        <div class="content-section">
+            <h2 class="section-title font-cinzel">Galería</h2>
+            <div class="gallery-rail">
+                <div id="gallery-track" class="gallery-track" aria-label="Carril de fotos">
+                    <div class="gallery-empty" id="gallery-empty">
+                        <strong>Pronto</strong> agregaremos fotos aquí desde el panel.
+                    </div>
+                </div>
+            </div>
+            <p style="text-align:center; margin-top: 14px; color: rgba(255,241,245,0.72); font-size: 0.95rem;">
+                Consejo: pasa el mouse para pausar el carril.
+            </p>
+        </div>
+    </section>
+
+    <!-- Itinerary Section -->
+    <div class="section-spacer"></div>
+    
+    <section id="itinerary" class="itinerary-section animate-on-scroll">
+        <div class="content-section">
+            <h2 class="section-title font-cinzel">Itinerario de la Noche</h2>
+            <!-- Fallback visible (se reemplaza automáticamente si event_config trae itinerario) -->
+            <div class="itinerary" id="cfg-itinerary-view">
+                <div class="itinerary-item">
+                    <div class="itinerary-time">8:30 – 9:30 P.M.</div>
+                    <div class="itinerary-content">
+                        <h4 class="font-cinzel">Sesión de Fotos</h4>
+                        <ul>
+                            <li>Sesión de fotos</li>
+                            <li>Recuerdos con familia y amigos</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="itinerary-item">
+                    <div class="itinerary-time">9:30 – 10:00 P.M.</div>
+                    <div class="itinerary-content">
+                        <h4 class="font-cinzel">Presentación</h4>
+                        <ul>
+                            <li>Palabras y brindis</li>
+                            <li>Momento especial</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="itinerary-item">
+                    <div class="itinerary-time">10:00 P.M. – 2:00 A.M.</div>
+                    <div class="itinerary-content">
+                        <h4 class="font-cinzel">Música</h4>
+                        <ul>
+                            <li>Amenizado por Grupo Okey y familia</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="itinerary-item">
+                    <div class="itinerary-time">2:00 – 3:00 A.M.</div>
+                    <div class="itinerary-content">
+                        <h4 class="font-cinzel">Show Sorpresa</h4>
+                        <ul>
+                            <li>Momento especial</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gifts Section -->
+    <div class="section-spacer"></div>
+    
+    <section class="gifts-section animate-on-scroll">
+        <div class="content-section">
+            <div class="gift-card">
+                <div class="gift-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <h2 class="font-cinzel">Regalos</h2>
+                <div class="gift-message">
+                    <p id="cfg-gifts-text-view">Tu presencia es el mejor regalo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RSVP Section -->
+    <div class="section-spacer"></div>
+    
+    <section id="rsvp" class="rsvp-section animate-on-scroll">
+        <div class="content-section">
+            <h2 class="section-title font-cinzel">Confirmar Asistencia</h2>
+            
+            <div class="rsvp-container">
+                <div class="guest-info">
+                    <div class="info-header">
+                        <i class="fas fa-ticket-alt"></i>
+                        <h3 class="font-cinzel" id="invitation-title">Tu Invitación</h3>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-item">
+                            <i class="fas fa-user-friends"></i>
+                            <div>
+                                <p class="info-label">Invitación válida para</p>
+                                <p id="max-guests" class="info-value">Cargando...</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-user-check"></i>
+                            <div>
+                                <p class="info-label">Estado</p>
+                                <p id="guest-status" class="info-value">Pendiente de confirmación</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="rsvp-form" id="rsvp-form-container">
+                    <form id="rsvp-form">
+                        <!-- NUEVO CAMPO: Nombre del invitado -->
+                        <div class="form-group" id="name-group">
+                            <label for="guest-name">
+                                <i class="fas fa-user"></i>
+                                Tu nombre
+                            </label>
+                            <input type="text" id="guest-name" class="form-input" placeholder="Escribe tu nombre completo" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="attendance">
+                                <i class="fas fa-calendar-check"></i>
+                                ¿Asistirás?
+                            </label>
+                            <select id="attendance" required class="form-select">
+                                <option value="">Selecciona una opción</option>
+                                <option value="yes">Sí, asistiré</option>
+                                <option value="no">No podré asistir</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" id="guests-count-group" style="display: none;">
+                            <label for="guests-count">
+                                <i class="fas fa-users"></i>
+                                ¿Cuántas personas asistirán?
+                            </label>
+                            <input type="number" id="guests-count" min="1" value="1" class="form-input">
+                            <div class="guests-info">
+                                Máximo permitido: <span id="max-allowed">0</span> personas
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" id="note-group" style="display: none;">
+                            <label for="note">
+                                <i class="fas fa-edit"></i>
+                                Nota para el cumpleañero (opcional)
+                            </label>
+                            <textarea id="note" class="form-textarea" placeholder="Escribe un mensaje si lo deseas..."></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-paper-plane"></i>
+                                Confirmar Asistencia
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div id="confirmation-message" class="confirmation-message" style="display: none;">
+                        <div class="message-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3 class="font-cinzel">¡Confirmación Exitosa!</h3>
+                        <p id="confirmation-details">Tu asistencia ha sido registrada correctamente.</p>
+                        <p class="message-note">Te esperamos en la alfombra roja.</p>
+                    </div>
+                    
+                    <div id="error-message" class="error-message" style="display: none;">
+                        <div class="message-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <h3 class="font-cinzel">Error</h3>
+                        <p id="error-details">Ha ocurrido un error al procesar tu confirmación.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="content-section">
+            <div class="footer-logo">
+                <i class="fas fa-heart"></i>
+                <span class="font-cinzel">Gloria María</span>
+            </div>
+            <div class="footer-text">
+                <p>85 años de vida, amor y bendiciones</p>
+                <p>16 de mayo 2026 • Salón Valles</p>
+            </div>
+            <div class="footer-social">
+                <p id="cfg-footer-hashtags-view">#CumpleGloriaMaria #85Años</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Música de fondo -->
+    <audio id="bg-music" preload="none" loop></audio>
+    <button id="audio-fab" class="audio-fab" style="display:none;" type="button" aria-label="Reproducir música">
+        <i class="fas fa-music"></i>
+        <span id="audio-label">Reproducir</span>
+    </button>
+
+    <!-- Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/invitation.js"></script>
+    
+    <script>
+        // Animaciones al hacer scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            // Observador de intersección para animaciones
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                    }
+                });
+            }, observerOptions);
+            
+            // Observar todos los elementos con animación
+            document.querySelectorAll('.animate-on-scroll').forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Efecto parallax en hero
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const hero = document.querySelector('.hero-section');
+                const navbar = document.querySelector('.nav-container');
+                
+                // Parallax en hero
+                if (hero) {
+                    hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+                }
+                
+                // Navbar scroll effect
+                if (scrolled > 100) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+                
+                // Smooth scroll para enlaces de navegación
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href');
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            window.scrollTo({
+                                top: targetElement.offsetTop - 80,
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
+                });
+            });
+            
+            // Función para abrir ubicación en Google Maps
+            window.openLocation = function() {
+                // Puedes cambiar esta URL desde Firestore (event_media/main.mapsUrl). Si no existe, usa la de abajo.
+                window.open(window.__MAPS_URL__ || 'https://www.google.com/maps/search/?api=1&query=Salon%20Valles%20Merida%20Yucatan', '_blank');
+            };
+            
+            // Countdown Timer
+            const countdownDate = window.__COUNTDOWN_TS__ || new Date('2026-05-16T20:30:00').getTime();
+            
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = countdownDate - now;
+                
+                if (distance < 0) {
+                    document.getElementById('days').textContent = '000';
+                    document.getElementById('hours').textContent = '00';
+                    document.getElementById('minutes').textContent = '00';
+                    document.getElementById('seconds').textContent = '00';
+                    return;
+                }
+                
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                document.getElementById('days').textContent = String(days).padStart(3, '0');
+                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            }
+            
+            // Actualizar countdown cada segundo
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        });
+    </script>
+</body>
+</html>
