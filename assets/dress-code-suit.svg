@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 220" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="sFabric" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3d3538"/>
+      <stop offset="100%" style="stop-color:#2a2528"/>
+    </linearGradient>
+  </defs>
+  <!-- cabeza -->
+  <ellipse cx="80" cy="36" rx="22" ry="26" fill="#f5d5c8" stroke="#8b4a38" stroke-width="1.4"/>
+  <!-- cuello / camisa -->
+  <path d="M64 58 L80 68 L96 58" fill="#faf8f6" stroke="#a67c29" stroke-width="1.2"/>
+  <!-- saco -->
+  <path d="M80 64 L118 78 L128 98 L132 165 L128 210 L32 210 L28 165 L32 98 L42 78 Z" fill="url(#sFabric)" stroke="#a67c29" stroke-width="1.6" stroke-linejoin="round"/>
+  <!-- solapas -->
+  <path d="M80 72 L102 108 L80 128 L58 108 Z" fill="#4a4246" stroke="#c9a227" stroke-width="1.1"/>
+  <!-- corbata -->
+  <path d="M80 70 L86 118 L80 132 L74 118 Z" fill="#8b2942" stroke="#6b1f35" stroke-width="0.9"/>
+  <!-- hombros saco -->
+  <path d="M42 78 Q80 62 118 78" stroke="#c9a227" stroke-width="1.2" fill="none"/>
+  <!-- brazos -->
+  <path d="M32 102 L22 168 M128 102 L138 168" stroke="#3d3538" stroke-width="10" stroke-linecap="round"/>
+  <!-- entrepierna -->
+  <path d="M68 168 L66 210 M92 168 L94 210" stroke="#2a2528" stroke-width="14" stroke-linecap="round"/>
+</svg>
